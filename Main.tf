@@ -1,0 +1,85 @@
+provider "azurerm" {
+  version = "=2.26.0"
+}
+
+resource "azurerm_resource_group" "mcp-rg" {
+  name     = "${var.resource_group}"
+  location = "${var.location}"
+}
+
+resource "azurerm_network_ddos_protection_plan" "mcp-ddos" {
+  name                = "ddospplan1"
+  location            = azurerm_resource_group.mcp-rg.location
+  resource_group_name = azurerm_resource_group.mcp-rg.name
+}
+
+resource "azurerm_virtual_network" "mcp-vnet" {
+  name                = "${var.virtual_network_name}"
+  location            = "${azurerm_resource_group.mcp-rg.location}"
+  address_space       = ["${var.address_space}"]
+  resource_group_name = "${azurerm_resource_group.mcp-rg.name}"
+
+ddos_protection_plan {
+    id     = azurerm_network_ddos_protection_plan.mcp-ddos.id
+    enable = true
+  }
+}
+
+resource "azurerm_subnet" "web-subnet" {
+  name                 = "${var.prefix}webtier-sn01"
+  virtual_network_name = "${azurerm_virtual_network.mcp-vnet.name}"
+  resource_group_name  = "${azurerm_resource_group.mcp-rg.name}"
+  address_prefix       = "${var.web_subnet_prefix}"
+}
+
+resource "azurerm_subnet" "app-subnet" {
+  name                 = "${var.prefix}apptier-sn01"
+  virtual_network_name = "${azurerm_virtual_network.mcp-vnet.name}"
+  resource_group_name  = "${azurerm_resource_group.mcp-rg.name}"
+  address_prefix       = "${var.app_subnet_prefix}"
+}
+
+resource "azurerm_subnet" "data-subnet" {
+  name                 = "${var.prefix}datatier-sn01"
+  virtual_network_name = "${azurerm_virtual_network.mcp-vnet.name}"
+  resource_group_name  = "${azurerm_resource_group.mcp-rg.name}"
+  address_prefix       = "${var.data_subnet_prefix}"
+}
+
+resource "azurerm_subnet" "dmz-subnet" {
+  name                 = "${var.prefix}dmztier-sn01"
+  virtual_network_name = "${azurerm_virtual_network.mcp-vnet.name}"
+  resource_group_name  = "${azurerm_resource_group.mcp-rg.name}"
+  address_prefix       = "${var.dmz_subnet_prefix}"
+}
+
+resource "azurerm_subnet" "gw-subnet" {
+  name                 = "${var.prefix}gwtier-sn01"
+  virtual_network_name = "${azurerm_virtual_network.mcp-vnet.name}"
+  resource_group_name  = "${azurerm_resource_group.mcp-rg.name}"
+  address_prefix       = "${var.gw_subnet_prefix}"
+}
+
+resource "azurerm_network_security_group" "mcp-websg" {
+  name                = "${var.prefix}webtier-nsg01"
+  resource_group_name = "${azurerm_resource_group.mcp-rg.name}"
+  location            = "${azurerm_resource_group.mcp-rg.location}"
+}
+
+resource "azurerm_network_security_group" "mcp-appsg" {
+  name                = "${var.prefix}apptier-nsg01"
+  resource_group_name = "${azurerm_resource_group.mcp-rg.name}"
+  location            = "${azurerm_resource_group.mcp-rg.location}"
+}
+
+resource "azurerm_network_security_group" "mcp-datasg" {
+  name                = "${var.prefix}datatier-nsg01"
+  resource_group_name = "${azurerm_resource_group.mcp-rg.name}"
+  location            = "${azurerm_resource_group.mcp-rg.location}"
+}
+
+resource "azurerm_network_security_group" "mcp-dmzsg" {
+  name                = "${var.prefix}dmztier-nsg01"
+  resource_group_name = "${azurerm_resource_group.mcp-rg.name}"
+  location            = "${azurerm_resource_group.mcp-rg.location}"
+}
