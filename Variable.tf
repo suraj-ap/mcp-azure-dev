@@ -42,3 +42,9 @@ variable "web_subnet_prefix" {
   variable "gw_subnet_prefix" {
   description = "The address prefix to use for the Gateway Tier subnet."
   default     = "192.168.0.224/27"
+
+  variable "tags" {
+  type        = map(string)
+  description = "The tags to associate with this resource group."
+  default     = {}
+}

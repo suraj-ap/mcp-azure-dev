@@ -5,6 +5,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "mcp-rg" {
   name     = "${var.resource_group}"
   location = "${var.location}"
+  tags     = "${var.tags}"
 }
 
 resource "azurerm_network_ddos_protection_plan" "mcp-ddos" {
