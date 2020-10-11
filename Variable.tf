@@ -26,23 +26,28 @@ variable "address_space" {
 variable "web_subnet_prefix" {
   description = "The address prefix to use for the Web Tier subnet."
   default     = "192.168.0.0/26"
+}
 
   variable "app_subnet_prefix" {
   description = "The address prefix to use for the App Tier subnet."
   default     = "192.168.0.64/26"
+  }
 
   variable "data_subnet_prefix" {
   description = "The address prefix to use for the Data Tier subnet."
   default     = "192.168.0.128/26"
+  }
 
   variable "dmz_subnet_prefix" {
   description = "The address prefix to use for the DMZ Tier subnet."
   default     = "192.168.0.192/27"
+  }
 
   variable "gw_subnet_prefix" {
   description = "The address prefix to use for the Gateway Tier subnet."
   default     = "192.168.0.224/27"
-
+  }
+  
   variable "tags" {
   type        = map(string)
   description = "The tags to associate with this resource group."
